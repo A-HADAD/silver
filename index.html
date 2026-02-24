@@ -22,17 +22,19 @@
       return data.rates.ILS;
     }
 
-    async function getMetalPrice(metal) {
-      const res = await fetch(`https://api.metals.live/v1/${metal}`);
+    async function getMetals() {
+      const res = await fetch("https://api.metals.dev/v1/latest");
       const data = await res.json();
-      return data[0]; // מחיר לאונקיה בדולר
+      return data.metals;
     }
 
     async function updatePrices() {
       try {
         const usdIls = await getUSDILS();
-        const goldOunce = await getMetalPrice("gold");
-        const silverOunce = await getMetalPrice("silver");
+        const metals = await getMetals();
+
+        const goldOunce = metals.gold.price;
+        const silverOunce = metals.silver.price;
 
         const goldGram = (goldOunce / OUNCE_TO_GRAM) * usdIls;
         const silverGram = (silverOunce / OUNCE_TO_GRAM) * usdIls;
