@@ -23,24 +23,29 @@
     }
 
     async function getMetalPrice(metal) {
-      const res = await fetch("https://api.metals.live/v1/" + metal);
+      const res = await fetch(`https://api.metals.live/v1/${metal}`);
       const data = await res.json();
       return data[0]; // מחיר לאונקיה בדולר
     }
 
     async function updatePrices() {
-      const usdIls = await getUSDILS();
-      const goldOunce = await getMetalPrice("gold");
-      const silverOunce = await getMetalPrice("silver");
+      try {
+        const usdIls = await getUSDILS();
+        const goldOunce = await getMetalPrice("gold");
+        const silverOunce = await getMetalPrice("silver");
 
-      const goldGram = (goldOunce / OUNCE_TO_GRAM) * usdIls;
-      const silverGram = (silverOunce / OUNCE_TO_GRAM) * usdIls;
+        const goldGram = (goldOunce / OUNCE_TO_GRAM) * usdIls;
+        const silverGram = (silverOunce / OUNCE_TO_GRAM) * usdIls;
 
-      document.getElementById("gold").innerText =
-        "מחיר גרם זהב: " + goldGram.toFixed(2) + " ₪";
+        document.getElementById("gold").innerText =
+          "מחיר גרם זהב: " + goldGram.toFixed(2) + " ₪";
 
-      document.getElementById("silver").innerText =
-        "מחיר גרם כסף: " + silverGram.toFixed(2) + " ₪";
+        document.getElementById("silver").innerText =
+          "מחיר גרם כסף: " + silverGram.toFixed(2) + " ₪";
+      } catch (e) {
+        document.getElementById("gold").innerText = "שגיאה בטעינת הנתונים";
+        document.getElementById("silver").innerText = "";
+      }
     }
 
     updatePrices();
